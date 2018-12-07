@@ -10,6 +10,7 @@ import org.apache.lucene.store.FSDirectory;
 import xyz.zdk.bean.FileModel;
 import xyz.zdk.filter.ExcelFilter;
 import xyz.zdk.filter.PDFFilter;
+import xyz.zdk.filter.PPTFilter;
 import xyz.zdk.filter.WordFilter;
 import xyz.zdk.ikanalyzer.IKAnalyzer;
 
@@ -84,16 +85,19 @@ public class CreateIndex {
             System.out.println(fileList.get(i).getName());
             //根据文件类型调用相应的filter
             //处理pdf文件
+            //接收filter返回的filemodel对象
+            //封装filemodel集合
             if (fileList.get(i).getName().endsWith(".pdf")){
                 fileModel = PDFFilter.extractFile(fileList.get(i));
                 fileModels.add(fileModel);
-            }else if (fileList.get(i).getName().endsWith(".xlsx")){
-                //接收filter返回的filemodel对象
+            }else if (fileList.get(i).getName().endsWith(".xls")||fileList.get(i).getName().endsWith(".xlsx")){
                 fileModel = ExcelFilter.extractFile(fileList.get(i));
-                //封装filemodel集合
                 fileModels.add(fileModel);
             }else if (fileList.get(i).getName().endsWith(".doc")||fileList.get(i).getName().endsWith(".docx")){
                 fileModel = WordFilter.extractFile(fileList.get(i));
+                fileModels.add(fileModel);
+            }else if (fileList.get(i).getName().endsWith(".ppt")||fileList.get(i).getName().endsWith(".pptx")){
+                fileModel = PPTFilter.extractFile(fileList.get(i));
                 fileModels.add(fileModel);
             }
         }

@@ -1,5 +1,9 @@
 package xyz.zdk.filter;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,15 +31,38 @@ public class ExcelFilter {
         List<String> stringList = new ArrayList<>();
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            Workbook workbook = new XSSFWorkbook(fileInputStream);
-            Sheet sheet = workbook.getSheetAt(0);
-            for (int i=sheet.getFirstRowNum();i<sheet.getLastRowNum();i++){
-                Row row = sheet.getRow(i);
-                if (row!=null){
-                    for (int j=row.getFirstCellNum();j<row.getLastCellNum();j++){
-                        Cell cell = row.getCell(j);
-                        if (cell!=null&&cell.toString()!=" "){
-                            stringList.add(cell.toString());
+            if (file.getName().endsWith(".xls")){
+                HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
+                for (int i=0;i<workbook.getNumberOfSheets();i++){
+                    HSSFSheet sheet = workbook.getSheetAt(i);
+                    for (int j=0;j<sheet.getLastRowNum();j++){
+                        HSSFRow row = sheet.getRow(j);
+                        if (row==null){
+                            continue;
+                        }
+                        for (int k=0;k<row.getLastCellNum();k++){
+                            HSSFCell cell = row.getCell(k);
+                            if (cell!=null){
+                                stringList.add(cell.getRichStringCellValue().getString());
+                            }
+                        }
+                    }
+                }
+            }else if (file.getName().endsWith(".xlsx")){
+                Workbook workbook = new XSSFWorkbook(fileInputStream);
+                for (int i=0;i<workbook.getNumberOfSheets();i++){
+                    Sheet sheet = workbook.getSheetAt(i);
+                    if (null!=sheet){
+                        for (int j=sheet.getFirstRowNum();j<sheet.getLastRowNum();j++){
+                            Row row = sheet.getRow(j);
+                            if (row!=null){
+                                for (int k=row.getFirstCellNum();k<row.getLastCellNum();k++){
+                                    Cell cell = row.getCell(k);
+                                    if (cell!=null&&cell.toString()!=" "){
+                                        stringList.add(cell.toString());
+                                    }
+                                }
+                            }
                         }
                     }
                 }
