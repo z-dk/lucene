@@ -2,11 +2,14 @@ package xyz.zdk.lucene;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import xyz.zdk.bean.FileModel;
+import xyz.zdk.filter.ExcelFilter;
+import xyz.zdk.filter.PDFFilter;
 import xyz.zdk.ikanalyzer.IKAnalyzer;
 
 import java.io.File;
@@ -23,7 +26,7 @@ import java.util.List;
  */
 public class CreateIndex {
     public static void main(String[] args) {
-
+        createIndex();
     }
     public static void createIndex(){
         //创建分词器
@@ -44,7 +47,14 @@ public class CreateIndex {
             inWriter = new IndexWriter(dir,icw);
             FieldType fieldType = new FieldType();
 
-            ArrayList<FileModel> fileList = (ArrayList<FileModel>) extractFile();
+            fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
+            fieldType.setStored(true);
+            fieldType.setTokenized(true);
+            fieldType.setStoreTermVectors(true);
+            fieldType.setStoreTermVectorPositions(true);
+            fieldType.setStoreTermVectorOffsets(true);
+
+            ArrayList<FileModel> fileList = (ArrayList<FileModel>) extractFile("E:\\文档\\JAVA api\\文档检索系统");
             // 遍历fileList,建立索引
             for (FileModel f : fileList) {
                 Document doc = new Document();
@@ -63,12 +73,48 @@ public class CreateIndex {
         Date end = new Date();
         System.out.println("索引文档用时："+(end.getTime()-start.getTime())+"毫秒");
     }
-    public static List<FileModel> extractFile(){
+    public static List<FileModel> extractFile(String path) throws Exception {
         List<FileModel> fileModels = new ArrayList<>();
         //首先遍历文件，判断文件类型
+
+        List<File> fileLIst = traverseFolder(path);
+        for (int i=0;i<fileLIst.size();i++){
+            FileModel fileModel;
+            System.out.println(fileLIst.get(i).getName());
+            if (fileLIst.get(i).getName().endsWith(".pdf")){
+                fileModel = PDFFilter.extractFile(fileLIst.get(i));
+                fileModels.add(fileModel);
+            }else if (fileLIst.get(i).getName().endsWith(".xlsx")){
+                fileModel = ExcelFilter.extractFile(fileLIst.get(i));
+                fileModels.add(fileModel);
+            }
+        }
         //根据文件类型调用相应的filter
         //接收filter返回的filemodel对象
         //封装filemodel集合
         return fileModels;
+    }
+    //递归遍历文件夹中所有文件与子文件夹中的文件
+    public static List<File> traverseFolder(String path){
+        File file = new File(path);
+        List<File> fileList = new ArrayList<>();
+        if (file.exists()){
+            File[] files = file.listFiles();
+            if (null == files || files.length == 0){
+                System.out.println("文件夹为空");
+            }
+            else {
+                for (File file1 : files){
+                    if (file1.isDirectory()){
+                        List<File> fileList1 = traverseFolder(file1.getAbsolutePath());
+                        fileList.addAll(fileList1);
+                    }
+                    else {
+                        fileList.add(file1);
+                    }
+                }
+            }
+        }
+        return fileList;
     }
 }
