@@ -6,8 +6,6 @@ import xyz.zdk.bean.FileModel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by z_dk on 2018/11/28.
@@ -28,7 +26,7 @@ public class PDFFilter {
             pdDocument = PDDocument.load(file);
             PDFTextStripper stripper = new PDFTextStripper();
             fileContent = stripper.getText(pdDocument);
-
+            pdDocument.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

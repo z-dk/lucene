@@ -10,6 +10,7 @@ import org.apache.lucene.store.FSDirectory;
 import xyz.zdk.bean.FileModel;
 import xyz.zdk.filter.ExcelFilter;
 import xyz.zdk.filter.PDFFilter;
+import xyz.zdk.filter.WordFilter;
 import xyz.zdk.ikanalyzer.IKAnalyzer;
 
 import java.io.File;
@@ -77,21 +78,25 @@ public class CreateIndex {
         List<FileModel> fileModels = new ArrayList<>();
         //首先遍历文件，判断文件类型
 
-        List<File> fileLIst = traverseFolder(path);
-        for (int i=0;i<fileLIst.size();i++){
+        List<File> fileList = traverseFolder(path);
+        for (int i=0;i<fileList.size();i++){
             FileModel fileModel;
-            System.out.println(fileLIst.get(i).getName());
-            if (fileLIst.get(i).getName().endsWith(".pdf")){
-                fileModel = PDFFilter.extractFile(fileLIst.get(i));
+            System.out.println(fileList.get(i).getName());
+            //根据文件类型调用相应的filter
+            //处理pdf文件
+            if (fileList.get(i).getName().endsWith(".pdf")){
+                fileModel = PDFFilter.extractFile(fileList.get(i));
                 fileModels.add(fileModel);
-            }else if (fileLIst.get(i).getName().endsWith(".xlsx")){
-                fileModel = ExcelFilter.extractFile(fileLIst.get(i));
+            }else if (fileList.get(i).getName().endsWith(".xlsx")){
+                //接收filter返回的filemodel对象
+                fileModel = ExcelFilter.extractFile(fileList.get(i));
+                //封装filemodel集合
+                fileModels.add(fileModel);
+            }else if (fileList.get(i).getName().endsWith(".doc")||fileList.get(i).getName().endsWith(".docx")){
+                fileModel = WordFilter.extractFile(fileList.get(i));
                 fileModels.add(fileModel);
             }
         }
-        //根据文件类型调用相应的filter
-        //接收filter返回的filemodel对象
-        //封装filemodel集合
         return fileModels;
     }
     //递归遍历文件夹中所有文件与子文件夹中的文件
