@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="475.0" prefWidth="826.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="xyz.zdk.UI.Main">
+  <children>
+    <HBox id="HBox" alignment="CENTER" layoutX="14.0" layoutY="11.0" spacing="5.0">
+      <children>
+        <TextField fx:id="textField" prefWidth="200.0" promptText="关键词" />
+        <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#search" text="检索" textAlignment="CENTER" />
+        <Button id="button" fx:id="openBtn" mnemonicParsing="false" onAction="#openFolder" text="打开" />
+        <Group id="Group" autoSizeChildren="true">
+          <children>
+            <RadioButton layoutX="0.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="true" text="all" textAlignment="LEFT">
+              <toggleGroup>
+                <ToggleGroup fx:id="type" />
+              </toggleGroup>
+            </RadioButton>
+            <RadioButton layoutX="268.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="xls" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton layoutX="67.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="pdf" textAlignment="LEFT" toggleGroup="$type" underline="false" />
+            <RadioButton layoutX="134.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="false" text="doc" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton layoutX="201.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="ppt" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton layoutX="335.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="false" text="txt" textAlignment="LEFT" toggleGroup="$type" />
+          </children>
+          <HBox.margin>
+            <Insets left="50.0" />
+          </HBox.margin>
+        </Group>
+      </children>
+    </HBox>
+    <VBox fx:id="vBox" layoutX="14.0" layoutY="58.0" prefHeight="403.0" prefWidth="785.0">
+      <children>
+        <VBox id="VBox" alignment="TOP_LEFT" spacing="5.0">
+          <children>
+            <Hyperlink text="Hyperlink" textFill="#0066ff" />
+            <Label text="Label" />
+          </children>
+        </VBox>
+      </children>
+    </VBox>
+  </children>
+  <stylesheets>
+    <URL value="@style.css" />
+  </stylesheets>
+</AnchorPane>

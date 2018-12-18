@@ -15,7 +15,7 @@ public class PDFFilter {
     //获取文件的FileModel的list集合
     public static FileModel extractFile(File f) throws Exception {
 
-        FileModel sf = new FileModel(f.getName(), parserFile(f));
+        FileModel sf = new FileModel(f.getName(), parserFile(f),f.getAbsolutePath());
         return sf;
     }
 

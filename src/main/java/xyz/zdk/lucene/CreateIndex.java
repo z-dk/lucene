@@ -8,10 +8,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import xyz.zdk.bean.FileModel;
-import xyz.zdk.filter.ExcelFilter;
-import xyz.zdk.filter.PDFFilter;
-import xyz.zdk.filter.PPTFilter;
-import xyz.zdk.filter.WordFilter;
+import xyz.zdk.filter.*;
 import xyz.zdk.ikanalyzer.IKAnalyzer;
 
 import java.io.File;
@@ -37,7 +34,7 @@ public class CreateIndex {
         icw.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         Directory dir = null;
         IndexWriter inWriter = null;
-        Path indexPath = Paths.get("E:\\文档\\JAVA api\\毕业-----------------------设计\\index");
+        Path indexPath = Paths.get("E:\\文档\\JAVA-api\\毕业-----------------------设计\\index");
         Date start = new Date();
         try {
             if (!Files.isReadable(indexPath)){
@@ -56,12 +53,13 @@ public class CreateIndex {
             fieldType.setStoreTermVectorPositions(true);
             fieldType.setStoreTermVectorOffsets(true);
 
-            ArrayList<FileModel> fileList = (ArrayList<FileModel>) extractFile("E:\\文档\\JAVA api\\文档检索系统");
+            ArrayList<FileModel> fileList = (ArrayList<FileModel>) extractFile("E:\\文档\\JAVA-api\\文档检索系统");
             // 遍历fileList,建立索引
             for (FileModel f : fileList) {
                 Document doc = new Document();
                 doc.add(new Field("title", f.getTitle(), fieldType));
                 doc.add(new Field("content", f.getContent(), fieldType));
+                doc.add(new Field("path", f.getPath(), fieldType));
                 inWriter.addDocument(doc);
             }
             inWriter.commit();
@@ -98,6 +96,9 @@ public class CreateIndex {
                 fileModels.add(fileModel);
             }else if (fileList.get(i).getName().endsWith(".ppt")||fileList.get(i).getName().endsWith(".pptx")){
                 fileModel = PPTFilter.extractFile(fileList.get(i));
+                fileModels.add(fileModel);
+            }else if (fileList.get(i).getName().endsWith(".txt")){
+                fileModel = TxtFilter.extractFile(fileList.get(i));
                 fileModels.add(fileModel);
             }
         }

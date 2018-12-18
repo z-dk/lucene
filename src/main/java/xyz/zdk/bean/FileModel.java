@@ -6,6 +6,7 @@ package xyz.zdk.bean;
 public class FileModel {
     private String title;
     private String content;
+    private String path;
 
     public String getTitle() {
         return title;
@@ -23,9 +24,18 @@ public class FileModel {
         this.content = content;
     }
 
-    public FileModel(String title, String content) {
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public FileModel(String title, String content, String path) {
         this.title = title;
         this.content = content;
+        this.path = path;
     }
 
     public FileModel() {

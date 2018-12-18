@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class ExcelFilter {
     public static FileModel extractFile(File file){
-        FileModel fileModel = new FileModel(file.getName(),parserFile(file));
+        FileModel fileModel = new FileModel(file.getName(),parserFile(file),file.getAbsolutePath());
         return fileModel;
     }
     public static String parserFile(File file){

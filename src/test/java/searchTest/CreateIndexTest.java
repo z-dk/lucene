@@ -1,4 +1,4 @@
-package xyz.zdk.lucene;
+package searchTest;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;

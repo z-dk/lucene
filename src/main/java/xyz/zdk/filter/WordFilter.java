@@ -12,7 +12,7 @@ import java.io.*;
  */
 public class WordFilter {
     public static FileModel extractFile(File file){
-        FileModel fileModel = new FileModel(file.getName(),parserFile(file));
+        FileModel fileModel = new FileModel(file.getName(),parserFile(file),file.getAbsolutePath());
         return fileModel;
     }
 
