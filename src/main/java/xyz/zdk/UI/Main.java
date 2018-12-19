@@ -1,31 +1,18 @@
 package xyz.zdk.UI;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import xyz.zdk.bean.FileModel;
-import xyz.zdk.ikanalyzer.IKAnalyzer;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
@@ -36,7 +23,15 @@ public class Main extends HBox{
     @FXML private TextField textField;
     @FXML private Button searchBtn;
     @FXML private Button openBtn;
-    @FXML private VBox vBox;
+    @FXML private RadioButton allRadio;
+    @FXML private RadioButton pdfRadio;
+    @FXML private RadioButton docRadio;
+    @FXML private RadioButton pptRadio;
+    @FXML private RadioButton xlsRadio;
+    @FXML private RadioButton txtRadio;
+    @FXML private ScrollPane scrollPane;
+    @FXML private Hyperlink hyperlink;
+    @FXML private ContextMenu contextMenu;
 
     @FXML
     public void openFolder(){
@@ -50,40 +45,79 @@ public class Main extends HBox{
     @FXML
     public void search(){
         String text = getTextField();
+        String fileType = null;
+        if (allRadio.isSelected()){
+            fileType = "all";
+        }else if (pdfRadio.isSelected()){
+            fileType = "pdf*";
+        }else if (docRadio.isSelected()){
+            fileType = "doc*";
+        }else if (pptRadio.isSelected()){
+            fileType = "ppt*";
+        }else if (xlsRadio.isSelected()){
+            fileType = "xls*";
+        }else if (txtRadio.isSelected()){
+            fileType = "txt";
+        }
         if (text==null||"".equals(text)){
             //弹窗警告内容不能为空
             Alert warning = new Alert(Alert.AlertType.WARNING,"关键词不能为空！");
             warning.showAndWait();
         }
         else {
-            ArrayList<FileModel> fileModels = xyz.zdk.lucene.Query.search(text);
-            for(FileModel fileModel:fileModels){
+            scrollPane.setContent(null);
+            ArrayList<FileModel> fileModels = xyz.zdk.lucene.Query.search(text,fileType);
+            VBox box = new VBox();
+            if (fileModels.size()==0){
+                Label label = new Label("没有符合条件的结果！");
+                label.setFont(Font.font(30));
+                label.setTextFill(Paint.valueOf("red"));
+                box.getChildren().add(label);
+            }else {
 
-                VBox box = new VBox();
-                box.setSpacing(5);
+                for (FileModel fileModel : fileModels) {
 
-                Hyperlink hyperlink = new Hyperlink(fileModel.getTitle());
-                //为文档名称超链接绑定事件
-                hyperlink.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
+                    box.setSpacing(5);
+
+                    Hyperlink hyperlink = new Hyperlink(fileModel.getTitle());
+                    MenuItem menuItem = new MenuItem("打开所在文件夹");
+                    menuItem.setOnAction(event -> {
+                        String folder = fileModel.getPath().replaceAll(fileModel.getTitle(),"");
                         try {
-                            String path = fileModel.getPath();
-                            Runtime.getRuntime().exec("cmd /c start "+path);
+                            Runtime.getRuntime().exec("explorer "+folder);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                });
-                Label label = new Label(fileModel.getContent());
-                box.getChildren().addAll(hyperlink,label);
-                vBox.getChildren().add(box);
+                    });
+                    ContextMenu contextMenu = new ContextMenu(menuItem);
+                    hyperlink.setContextMenu(contextMenu);
+                    //为文档名称超链接绑定事件
+
+                    hyperlink.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            try {
+
+                                String path = fileModel.getPath();
+                                Runtime.getRuntime().exec("cmd /c start " + path);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    Label label = new Label(fileModel.getContent());
+                    box.getChildren().addAll(hyperlink, label);
+
+                }
             }
+            scrollPane.setContent(box);
         }
     }
 
     @FXML
-    public void openFile(){
+    public void showrt(ActionEvent event){
+
+        contextMenu.show(hyperlink,90,90);
 
     }
 

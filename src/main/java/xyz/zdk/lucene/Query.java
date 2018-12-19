@@ -5,11 +5,10 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.search.highlight.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  * Created by z_dk on 2018/12/18.
  */
 public class Query {
-    public static ArrayList<FileModel> search(String text){
+    public static ArrayList<FileModel> search(String text,String fileType){
         ArrayList<FileModel> filelists = new ArrayList<>();
 
         String[] fields = {"title","content"};
@@ -37,17 +36,34 @@ public class Query {
             IndexSearcher searcher = new IndexSearcher(reader);
             Analyzer analyzer = new IKAnalyzer(true);
 
+            //多域搜索
             MultiFieldQueryParser parser = new MultiFieldQueryParser(fields,analyzer);
 //            parser.setDefaultOperator(QueryParser.Operator.AND);
             org.apache.lucene.search.Query query = parser.parse(text);
-            TopDocs tds = searcher.search(query,10);
+            TopDocs tds;
+            //如果不是检索全部类型的文档，则将文档类型作为搜索条件
+            if (!"all".equals(fileType)){
+
+                Term term= new Term("title",fileType);
+                WildcardQuery typeQuery = new WildcardQuery(term);
+
+                BooleanClause booleanClause = new BooleanClause(query, BooleanClause.Occur.MUST);
+                BooleanClause booleanClause1 = new BooleanClause(typeQuery, BooleanClause.Occur.MUST);
+                BooleanQuery booleanQuery = new BooleanQuery.Builder()
+                        .add(booleanClause).add(booleanClause1).build();
+
+                tds = searcher.search(booleanQuery,10);
+            }else{
+                tds = searcher.search(query,10);
+            }
+
 
             //定制高亮标签
-            SimpleHTMLFormatter fors = new SimpleHTMLFormatter();
+            /*SimpleHTMLFormatter fors = new SimpleHTMLFormatter();
             QueryScorer scoreTitle = new QueryScorer(query,fields[0]);
             Highlighter hlTitle = new Highlighter(fors,scoreTitle);
             QueryScorer scoreContent = new QueryScorer(query,fields[1]);
-            Highlighter hlContent = new Highlighter(fors,scoreContent);
+            Highlighter hlContent = new Highlighter(fors,scoreContent);*/
 
             //遍历查询结果，将结果返回给客户端
             for(ScoreDoc sd:tds.scoreDocs){

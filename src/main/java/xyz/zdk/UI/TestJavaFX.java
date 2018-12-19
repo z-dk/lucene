@@ -20,7 +20,7 @@ public class TestJavaFX extends Application {
 
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("main.fxml"));
         primaryStage.setTitle("文件检索系统");
-        primaryStage.setScene(new Scene(root,826,445));
+        primaryStage.setScene(new Scene(root,826,475));
         primaryStage.show();
     }
 }

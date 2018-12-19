@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="475.0" prefWidth="826.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="xyz.zdk.UI.Main">
   <children>
@@ -19,35 +20,47 @@
         <TextField fx:id="textField" prefWidth="200.0" promptText="关键词" />
         <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#search" text="检索" textAlignment="CENTER" />
         <Button id="button" fx:id="openBtn" mnemonicParsing="false" onAction="#openFolder" text="打开" />
-        <Group id="Group" autoSizeChildren="true">
+        <Group id="Group" autoSizeChildren="true" scaleX="1.0" scaleY="1.0">
           <children>
-            <RadioButton layoutX="0.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="true" text="all" textAlignment="LEFT">
+            <RadioButton id="all" fx:id="allRadio" layoutX="0.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="true" text="all" textAlignment="LEFT">
               <toggleGroup>
                 <ToggleGroup fx:id="type" />
               </toggleGroup>
             </RadioButton>
-            <RadioButton layoutX="268.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="xls" textAlignment="LEFT" toggleGroup="$type" />
-            <RadioButton layoutX="67.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="pdf" textAlignment="LEFT" toggleGroup="$type" underline="false" />
-            <RadioButton layoutX="134.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="false" text="doc" textAlignment="LEFT" toggleGroup="$type" />
-            <RadioButton layoutX="201.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="ppt" textAlignment="LEFT" toggleGroup="$type" />
-            <RadioButton layoutX="335.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="false" text="txt" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton id="xls" fx:id="xlsRadio" layoutX="268.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="xls" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton id="pdf" fx:id="pdfRadio" layoutX="67.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="pdf" textAlignment="LEFT" toggleGroup="$type" underline="false" />
+            <RadioButton id="doc" fx:id="docRadio" layoutX="134.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="false" text="doc" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton id="ppt" fx:id="pptRadio" layoutX="201.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" text="ppt" textAlignment="LEFT" toggleGroup="$type" />
+            <RadioButton id="txt" fx:id="txtRadio" layoutX="335.0" layoutY="0.0" mnemonicParsing="false" prefWidth="67.0" selected="false" text="txt" textAlignment="LEFT" toggleGroup="$type" />
           </children>
           <HBox.margin>
-            <Insets left="50.0" />
+            <Insets left="40.0" />
           </HBox.margin>
         </Group>
       </children>
     </HBox>
-    <VBox fx:id="vBox" layoutX="14.0" layoutY="58.0" prefHeight="403.0" prefWidth="785.0">
-      <children>
-        <VBox id="VBox" alignment="TOP_LEFT" spacing="5.0">
+    <ScrollPane fx:id="scrollPane" disable="false" focusTraversable="false" hbarPolicy="NEVER" layoutX="14.0" layoutY="54.0" prefHeight="407.0" prefWidth="805.0" visible="true">
+      <content>
+        <VBox prefHeight="58.0" prefWidth="805.0">
           <children>
-            <Hyperlink text="Hyperlink" textFill="#0066ff" />
-            <Label text="Label" />
+            <Hyperlink onAction="#showrt" text="Hyperlink" textFill="#00a3ff">
+              <contextMenu>
+                <ContextMenu onAction="#showrt" fx:id="contextMenu">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="打开所在文件夹" />
+                  </items>
+                </ContextMenu>
+              </contextMenu>
+            </Hyperlink>
+            <Label text="Label">
+              <font>
+                <Font size="30.0" />
+              </font>
+            </Label>
           </children>
         </VBox>
-      </children>
-    </VBox>
+      </content>
+    </ScrollPane>
   </children>
   <stylesheets>
     <URL value="@style.css" />
