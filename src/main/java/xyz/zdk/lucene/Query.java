@@ -57,35 +57,39 @@ public class Query {
                 tds = searcher.search(query,10);
             }
 
-
             //定制高亮标签
-            /*SimpleHTMLFormatter fors = new SimpleHTMLFormatter();
+            ///*
+            SimpleHTMLFormatter fors = new SimpleHTMLFormatter("<span>","</span>");
             QueryScorer scoreTitle = new QueryScorer(query,fields[0]);
             Highlighter hlTitle = new Highlighter(fors,scoreTitle);
             QueryScorer scoreContent = new QueryScorer(query,fields[1]);
-            Highlighter hlContent = new Highlighter(fors,scoreContent);*/
+            Highlighter hlContent = new Highlighter(fors,scoreContent);
+            //*/
 
             //遍历查询结果，将结果返回给客户端
             for(ScoreDoc sd:tds.scoreDocs){
                 Document doc = searcher.doc(sd.doc);
                 String title = doc.get("title");
-                String content = doc.get("content").replaceAll("\\s*","");
+                String content = doc.get("content");
                 //高亮显示
-                /*TokenStream tokenStream = TokenSources.getAnyTokenStream
+                //对title进行高亮显示
+                TokenStream tokenStream = TokenSources.getAnyTokenStream
                         (searcher.getIndexReader(),sd.doc,fields[0],new IKAnalyzer());
                 Fragmenter fragmenter = new SimpleSpanFragmenter(scoreTitle);
                 hlTitle.setTextFragmenter(fragmenter);
                 String hl_title = hlTitle.getBestFragment(tokenStream,title);
 
+                //对content进行高亮显示
                 tokenStream = TokenSources.getAnyTokenStream
-                        (searcher.getIndexReader(),sd.doc,fields[1],new IKAnalyzer(true));
+                        (searcher.getIndexReader(),sd.doc,fields[1],new IKAnalyzer());
                 fragmenter = new SimpleSpanFragmenter(scoreContent);
                 hlContent.setTextFragmenter(fragmenter);
                 String hl_content = hlContent.getBestFragment(tokenStream,content);
 
                 FileModel fm = new FileModel(hl_title!=null?hl_title:title,
-                        hl_content!=null?hl_content:content,doc.get("path"));*/
-                FileModel fm = new FileModel(title,content,doc.get("path"));
+                        (hl_content!=null?hl_content:content).replaceAll("\\s*",""),doc.get("path"));
+
+                //FileModel fm = new FileModel(title,content,doc.get("path"));
                 filelists.add(fm);
             }
             dir.close();
@@ -94,6 +98,8 @@ public class Query {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (InvalidTokenOffsetsException e) {
             e.printStackTrace();
         }
         return filelists;

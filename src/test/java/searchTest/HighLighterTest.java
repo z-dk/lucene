@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 public class HighLighterTest {
     public static void main(String[] args) throws IOException, ParseException, InvalidTokenOffsetsException {
         String field = "title";
-        Path indexPath = Paths.get("E:\\文档\\JAVA api\\毕业-----------------------设计\\index");
+        Path indexPath = Paths.get("E:\\文档\\JAVA-api\\毕业-----------------------设计\\index");
         Directory dir = FSDirectory.open(indexPath);
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);

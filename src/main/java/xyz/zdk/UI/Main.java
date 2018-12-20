@@ -5,13 +5,15 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.*;
 
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import xyz.zdk.bean.FileModel;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -79,7 +81,6 @@ public class Main extends HBox{
 
                     box.setSpacing(5);
 
-                    Hyperlink hyperlink = new Hyperlink(fileModel.getTitle());
                     MenuItem menuItem = new MenuItem("打开所在文件夹");
                     menuItem.setOnAction(event -> {
                         String folder = fileModel.getPath().replaceAll(fileModel.getTitle(),"");
@@ -90,23 +91,50 @@ public class Main extends HBox{
                         }
                     });
                     ContextMenu contextMenu = new ContextMenu(menuItem);
-                    hyperlink.setContextMenu(contextMenu);
+
+                    HBox hBox = new HBox();
+                    String[] strings1 = fileModel.getTitle().split("<span>|</span>");
+                    for (int i=0;i<strings1.length;i++){
+                        Label label = new Label(strings1[i]);
+                        label.setFont(Font.font(20));
+                        if (i%2==1){
+                            label.setTextFill(Color.web("red"));
+                        }else{
+                            label.setTextFill(Color.web("blue"));
+                        }
+                        label.setContextMenu(contextMenu);
+                        hBox.getChildren().add(label);
+                    }
+
                     //为文档名称超链接绑定事件
 
-                    hyperlink.setOnAction(new EventHandler<ActionEvent>() {
+                    hBox.setOnMouseClicked(new EventHandler<javafx.scene.input.MouseEvent>() {
                         @Override
-                        public void handle(ActionEvent event) {
-                            try {
+                        public void handle(javafx.scene.input.MouseEvent event) {
+                            if (event.getButton().equals(MouseButton.PRIMARY)){
+                                try {
 
-                                String path = fileModel.getPath();
-                                Runtime.getRuntime().exec("cmd /c start " + path);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                    String path = fileModel.getPath();
+                                    Runtime.getRuntime().exec("cmd /c start " + path);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     });
-                    Label label = new Label(fileModel.getContent());
-                    box.getChildren().addAll(hyperlink, label);
+                    //对标签拆分进行高亮显示
+                    FlowPane pane = new FlowPane();
+
+                    String[] strings = fileModel.getContent().split("<span>|</span>");
+                    for (int i = 0;i<strings.length;i++){
+                        Label label = new Label(strings[i]);
+                        label.setWrapText(true);
+                        if (i%2==1){
+                            label.setTextFill(Color.web("red"));
+                        }
+                        pane.getChildren().add(label);
+                    }
+                    box.getChildren().addAll(hBox, pane);
 
                 }
             }

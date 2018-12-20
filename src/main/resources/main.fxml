@@ -39,7 +39,7 @@
         </Group>
       </children>
     </HBox>
-    <ScrollPane fx:id="scrollPane" disable="false" focusTraversable="false" hbarPolicy="NEVER" layoutX="14.0" layoutY="54.0" prefHeight="407.0" prefWidth="805.0" visible="true">
+    <ScrollPane fx:id="scrollPane" disable="false" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" layoutX="14.0" layoutY="54.0" prefHeight="407.0" prefWidth="798.0" visible="true">
       <content>
         <VBox prefHeight="58.0" prefWidth="805.0">
           <children>
@@ -52,7 +52,7 @@
                 </ContextMenu>
               </contextMenu>
             </Hyperlink>
-            <Label text="Label">
+            <Label text="Label" textFill="RED">
               <font>
                 <Font size="30.0" />
               </font>
