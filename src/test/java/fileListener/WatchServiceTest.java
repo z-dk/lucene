@@ -1,5 +1,6 @@
 package fileListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
@@ -13,10 +14,8 @@ public class WatchServiceTest {
         String path = "E:\\文档\\JAVA-api\\文档检索系统";
 
         WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path p = Paths.get(path);
-        p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY,
-                StandardWatchEventKinds.ENTRY_DELETE,
-                StandardWatchEventKinds.ENTRY_CREATE);
+        //遍历目录，为所有文件夹添加监听
+        FileORDir.folderORFile(path,watchService);
 
         Thread thread = new Thread(() -> {
             try {
@@ -26,10 +25,18 @@ public class WatchServiceTest {
                     for(WatchEvent<?> event : watchEvents){
                         //TODO 根据事件类型采取不同的操作。。。。。。。
                         System.out.println("["+path+"/"+event.context()+"]文件发生了["+event.kind()+"]事件");
+                        if (event.kind().equals(StandardWatchEventKinds.ENTRY_CREATE)){
+                            //对创建的新目录添加监听
+                            Path newPath = (Path) event.context();
+                            if (new File(newPath.toAbsolutePath().toString()).isDirectory())
+                                FileORDir.folderORFile(newPath.toAbsolutePath().toString(),watchService);
+                        }
                     }
                     watchKey.reset();
                 }
             } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
