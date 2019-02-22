@@ -1,14 +1,8 @@
 package lucene;
 
-import xyz.zdk.bean.FileModel;
-import xyz.zdk.filter.*;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by z_dk on 2019/2/22.
