@@ -1,4 +1,4 @@
-package fileListener;
+package xyz.zdk.listener;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.List;
  * Created by z_dk on 2019/1/31.
  */
 public class WatchServiceTest {
-    public static void main(String[] args) throws IOException {
+    public static void startListener() throws IOException {
         // 需要监听的文件目录（只能监听目录）
         String path = "E:\\文档\\JAVA-api\\文档检索系统";
 
@@ -31,6 +31,9 @@ public class WatchServiceTest {
                             //对创建的新目录添加监听
                             if (file.isDirectory())
                                 FileORDir.folderORFile(file.getAbsolutePath().toString(),watchService);
+                            else if (file.isFile()){
+                                //对新建文件进行解析，更新索引
+                            }
                         }
                     }
                     watchKey.reset();

@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class CreateIndex {
     public static void main(String[] args) {
+        clearFolder(new File("E:\\文档\\JAVA-api\\毕业-----------------------设计\\index"));
         createIndex();
     }
     public static void createIndex(){
@@ -126,5 +127,16 @@ public class CreateIndex {
             }
         }
         return fileList;
+    }
+    //清空要存放索引的文件夹
+    public static void clearFolder(File file){
+        if (file.isFile()){
+            System.out.println("要清空的路径指定错误！");
+        }else {
+            File [] f = file.listFiles();
+            for (int i=0;i<f.length;i++){
+                f[i].delete();
+            }
+        }
     }
 }
