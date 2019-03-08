@@ -1,78 +1,51 @@
 package xyz.zdk.lucene;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.*;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+
 import xyz.zdk.bean.FileModel;
 import xyz.zdk.filter.*;
-import xyz.zdk.ikanalyzer.IKAnalyzer;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by z_dk on 2018/12/4.
  */
 public class CreateIndex {
-    public static void main(String[] args) {
-        clearFolder(new File("E:\\文档\\JAVA-api\\毕业-----------------------设计\\index"));
+    public static String indexpath = "E:\\文档\\JAVA-api\\毕业-----------------------设计\\index";
+    //创建所有文档索引
+    public static void create() {
+        clearFolder(new File(indexpath));
         createIndex();
     }
+    //对新增文档创建索引
+    public static void addDocs(ArrayList<FileModel> fileModels) throws IOException {
+        Lucene lucene = new Lucene(Paths.get(indexpath));
+        lucene.addDocuments(fileModels);
+        lucene.close();
+    }
+    //删除指定文档索引(按照文档路径删除)
+    public static void delete(String path) throws IOException {
+        Lucene lucene = new Lucene(Paths.get(indexpath));
+        lucene.delete(path);
+        lucene.close();
+    }
     public static void createIndex(){
-        //创建分词器
-        Analyzer analyzer = new IKAnalyzer();
-        IndexWriterConfig icw = new IndexWriterConfig(analyzer);
-        icw.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        Directory dir = null;
-        IndexWriter inWriter = null;
-        Path indexPath = Paths.get("E:\\文档\\JAVA-api\\毕业-----------------------设计\\index");
-        Date start = new Date();
+
+        Path indexPath = Paths.get(indexpath);
         try {
-            if (!Files.isReadable(indexPath)){
-                System.out.println("Document directory '"+indexPath.toAbsolutePath()+"' does not exist or is" +
-                        " not readable,please check the path");
-                System.exit(1);
-            }
-            dir = FSDirectory.open(indexPath);
-            inWriter = new IndexWriter(dir,icw);
-            FieldType fieldType = new FieldType();
-
-            fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
-            fieldType.setStored(true);
-            fieldType.setTokenized(true);
-            fieldType.setStoreTermVectors(true);
-            fieldType.setStoreTermVectorPositions(true);
-            fieldType.setStoreTermVectorOffsets(true);
-
+            Lucene lucene = new Lucene(indexPath);
             ArrayList<FileModel> fileList = (ArrayList<FileModel>) extractFile("E:\\文档\\JAVA-api\\文档检索系统");
-            // 遍历fileList,建立索引
-            for (FileModel f : fileList) {
-                Document doc = new Document();
-                doc.add(new Field("title", f.getTitle(), fieldType));
-                doc.add(new Field("content", f.getContent(), fieldType));
-                doc.add(new Field("path", f.getPath(), fieldType));
-                inWriter.addDocument(doc);
-            }
-            inWriter.commit();
-            inWriter.close();
-            dir.close();
-        } catch (IOException e){
+            lucene.addDocuments(fileList);
+            lucene.close();
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Date end = new Date();
-        System.out.println("索引文档用时："+(end.getTime()-start.getTime())+"毫秒");
     }
     public static List<FileModel> extractFile(String path) throws Exception {
         List<FileModel> fileModels = new ArrayList<>();

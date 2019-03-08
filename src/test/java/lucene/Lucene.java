@@ -52,24 +52,12 @@ public class Lucene {
         if (Objects.nonNull(analyzer))
             analyzer.close();
     }
-    public Lucene addDocument(FileModel fileModel) throws IOException {
-
-        Document doc = new Document();
-        doc.add(new Field("title",fileModel.getContent(),fieldType));
-        doc.add(new Field("content",fileModel.getTitle(),fieldType));
-        doc.add(new Field("path",fileModel.getPath(),fieldType));
-        synchronized (this) {
-            indexWriter.addDocument(doc);
-            indexWriter.commit();
-        }
-        return this;
-    }
 
     public Lucene addDocuments(List<FileModel> fileModels) throws IOException {
         for (FileModel f : fileModels) {
             Document doc = new Document();
             doc.add(new Field("title", f.getTitle(), fieldType));
-            doc.add(new Field("content", f.getContent(), fieldType));
+            //doc.add(new Field("content", f.getContent(), fieldType));
             doc.add(new Field("path", f.getPath(), fieldType));
             indexWriter.addDocument(doc);
         }

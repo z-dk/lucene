@@ -15,6 +15,7 @@ import xyz.zdk.ikanalyzer.IKAnalyzer;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -51,26 +52,41 @@ public class Lucene {
         if (Objects.nonNull(analyzer))
             analyzer.close();
     }
-    public Lucene addDocument(FileModel fileModel) throws IOException {
-
-        Document doc = new Document();
-        doc.add(new Field("title",fileModel.getContent(),fieldType));
-        doc.add(new Field("content",fileModel.getTitle(),fieldType));
-        doc.add(new Field("path",fileModel.getPath(),fieldType));
-        synchronized (this) {
+    public Lucene addDocuments(List<FileModel> fileModels) throws IOException {
+        for (FileModel f : fileModels) {
+            Document doc = new Document();
+            doc.add(new Field("title", f.getTitle(), fieldType));
+            doc.add(new Field("content", f.getContent(), fieldType));
+            doc.add(new Field("path", f.getPath(), fieldType));
             indexWriter.addDocument(doc);
+        }
+        indexWriter.commit();
+        return this;
+    }
+
+    public Lucene delete(String path) throws IOException {
+        // 做删除标志
+        synchronized (this) {
+            indexWriter.deleteDocuments(new Term("title", path));
+            //indexWriter.forceMergeDeletes();
             indexWriter.commit();
         }
         return this;
     }
 
-    public Lucene delete(String ID) throws IOException {
-        // 做删除标志
+    public Lucene update(String path,Document document) throws IOException {
         synchronized (this) {
-            indexWriter.deleteDocuments(new Term("id", ID));
-            indexWriter.forceMergeDeletes();
+            indexWriter.updateDocument(new Term("path",path),document);
             indexWriter.commit();
         }
         return this;
+    }
+
+    public Document setDocument(FileModel f){
+        Document document = new Document();
+        document.add(new Field("title",f.getTitle(),fieldType));
+        document.add(new Field("content",f.getContent(),fieldType));
+        document.add(new Field("path",f.getPath(),fieldType));
+        return document;
     }
 }
