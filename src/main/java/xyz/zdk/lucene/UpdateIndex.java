@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 public class UpdateIndex {
 
     public static void update(File file) throws Exception {
-        Lucene lucene = new Lucene(Paths.get("E:\\文档\\JAVA-api\\毕业-----------------------设计\\index"));
-        FileModel fileModel = parserFile(file);
+        Lucene lucene = new Lucene(Paths.get(Lucene.HOMEPATH));
+        FileModel fileModel = Utils.parserFile(file);
         if (fileModel != null){
             Document document = lucene.setDocument(fileModel);
             lucene.update(fileModel.getPath(),document);
@@ -22,26 +22,5 @@ public class UpdateIndex {
             System.out.println("更新失败");
         }
         lucene.close();
-    }
-
-    public static FileModel parserFile(File file) throws Exception {
-        FileModel fileModel;
-        if (file.getName().endsWith(".pdf")){
-            fileModel = PDFFilter.extractFile(file);
-            return fileModel;
-        }else if (file.getName().endsWith(".xls")||file.getName().endsWith(".xlsx")){
-            fileModel = ExcelFilter.extractFile(file);
-            return fileModel;
-        }else if (file.getName().endsWith(".doc")||file.getName().endsWith(".docx")){
-            fileModel = WordFilter.extractFile(file);
-            return fileModel;
-        }else if (file.getName().endsWith(".ppt")||file.getName().endsWith(".pptx")){
-            fileModel = PPTFilter.extractFile(file);
-            return fileModel;
-        }else if (file.getName().endsWith(".txt")){
-            fileModel = TxtFilter.extractFile(file);
-            return fileModel;
-        }
-        return null;
     }
 }

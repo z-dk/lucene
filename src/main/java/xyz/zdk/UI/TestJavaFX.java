@@ -5,7 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import xyz.zdk.listener.WatchServiceTest;
+import xyz.zdk.listener.WatchServiceListen;
+import xyz.zdk.lucene.CreateIndex;
 
 import java.io.IOException;
 
@@ -15,6 +16,10 @@ import java.io.IOException;
 public class TestJavaFX extends Application {
 
     public static void main(String[] args) throws IOException {
+
+        //启动页面新建索引文件
+        //CreateIndex.create();
+
         launch(args);
     }
 

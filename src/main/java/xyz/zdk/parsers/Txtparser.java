@@ -1,4 +1,4 @@
-package xyz.zdk.textparsers;
+package xyz.zdk.parsers;
 
 import java.io.*;
 

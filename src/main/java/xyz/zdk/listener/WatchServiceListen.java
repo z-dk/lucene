@@ -1,5 +1,7 @@
 package xyz.zdk.listener;
 
+import xyz.zdk.lucene.UpdateIndex;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * Created by z_dk on 2019/1/31.
  */
-public class WatchServiceTest {
+public class WatchServiceListen {
     public static void startListener() throws IOException {
         // 需要监听的文件目录（只能监听目录）
         String path = "E:\\文档\\JAVA-api\\文档检索系统";
@@ -32,7 +34,12 @@ public class WatchServiceTest {
                             if (file.isDirectory())
                                 FileORDir.folderORFile(file.getAbsolutePath().toString(),watchService);
                             else if (file.isFile()){
-                                //对新建文件进行解析，更新索引
+                                //对新建文件进行解析，新增索引
+                                try {
+                                    UpdateIndex.update(file);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }

@@ -1,4 +1,4 @@
-package xyz.zdk.textparsers;
+package xyz.zdk.parsers;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
