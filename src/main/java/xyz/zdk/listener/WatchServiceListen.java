@@ -1,7 +1,5 @@
 package xyz.zdk.listener;
 
-import xyz.zdk.lucene.UpdateIndex;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -21,27 +19,20 @@ public class WatchServiceListen {
 
         Thread thread = new Thread(() -> {
             try {
-                while(true){
+                out:while(true){
                     WatchKey watchKey = watchService.take();
                     List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
-                    for(WatchEvent<?> event : watchEvents){
+                    in:for(WatchEvent<?> event : watchEvents){
                         Path paths = (Path) watchKey.watchable();
                         File file = new File(paths.toAbsolutePath().toString()+"\\"+event.context());
-                        System.out.println("["+file.getAbsolutePath().toString()+"]文件发生了["+event.kind()+"]事件");
-                        //
-                        if (event.kind().equals(StandardWatchEventKinds.ENTRY_CREATE)){
-                            //对创建的新目录添加监听
-                            if (file.isDirectory())
-                                FileORDir.folderORFile(file.getAbsolutePath().toString(),watchService);
-                            else if (file.isFile()){
-                                //对新建文件进行解析，新增索引
-                                try {
-                                    UpdateIndex.update(file);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                        if (file.getName().startsWith("~$")||file.getName().startsWith("~WR")
+                                ||file.getName().endsWith(".tmp")){
+                            continue in;
                         }
+                        System.out.println("["+file.getAbsolutePath().toString()+"]文件发生了["
+                                +event.kind()+"]事件");
+                        //根据文件的变化情况，被动执行相应的方法更新索引
+                        FileUpdateIndex.excuteUpdateIndex(event,watchService,file);
                     }
                     watchKey.reset();
                 }

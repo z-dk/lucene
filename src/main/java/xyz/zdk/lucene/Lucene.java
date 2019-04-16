@@ -10,6 +10,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import xyz.zdk.bean.FileModel;
@@ -60,6 +61,9 @@ public class Lucene {
     public Lucene addDocuments(List<FileModel> fileModels) throws IOException {
         for (FileModel f : fileModels) {
             Document doc = new Document();
+            if (f==null){
+                return this;
+            }
             doc.add(new Field("title", f.getTitle(), fieldType));
             doc.add(new Field("content", f.getContent(), fieldType));
             doc.add(new StringField("path", f.getPath(), Field.Store.YES));
@@ -75,7 +79,7 @@ public class Lucene {
     public Lucene delete(String path) throws IOException {
         // 做删除标志
         synchronized (this) {
-            TermQuery query=new TermQuery(new Term("path",path));
+            WildcardQuery query=new WildcardQuery(new Term("path",path.replace("\\","?")+"*"));
             indexWriter.deleteDocuments(query);
             indexWriter.commit();
         }

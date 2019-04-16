@@ -4,10 +4,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import xyz.zdk.bean.FileModel;
 
@@ -43,6 +40,7 @@ public class ExcelFilter {
                         for (int k=0;k<row.getLastCellNum();k++){
                             HSSFCell cell = row.getCell(k);
                             if (cell!=null){
+                                cell.setCellType(CellType.STRING);
                                 stringList.add(cell.getRichStringCellValue().getString());
                             }
                         }

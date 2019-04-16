@@ -3,10 +3,7 @@ package lucene;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.*;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSDirectory;
@@ -29,12 +26,31 @@ public class TestLucene {
         //CreateIndex.create();
         //DeleteIndex.delete("E:\\文档\\JAVA-api\\文档检索系统\\41-1507084237-朱登奎-第二组.pptx");// √
         //AddIndex.addIndex(new File("E:\\文档\\JAVA-api\\文档检索系统\\41-1507084237-朱登奎-第二组.pptx"));
-        UpdateIndex.update(new File("E:\\文档\\JAVA-api\\文档检索系统\\任务详细划分.docx"));
+        //UpdateIndex.update(new File("E:\\文档\\JAVA-api\\文档检索系统\\任务详细划分.docx"));
+        //testSearch("E:\\文档\\JAVA-api\\文档检索系统\\子文件夹2"+"*");
+        testSearch("E:\\文档\\JAVA-api\\文档检索系统\\子文件夹2".replace("\\","?"));
     }
 
-    public static void testUpdate(String p){
-        //UpdateIndex.update();
+    public static void testSearch(String path){
+        try {
+            Directory dir = FSDirectory.open(Paths.get(Lucene.HOMEPATH));
+            IndexReader reader = DirectoryReader.open(dir);
+            IndexSearcher searcher = new IndexSearcher(reader);
 
+            System.out.println(path);
+
+            WildcardQuery query=new WildcardQuery(new Term("path",path+"*"));
+            //TermQuery query = new TermQuery(new Term("path",path));
+            TopDocs tops=searcher.search(query, 10);
+            for (ScoreDoc sc: tops.scoreDocs) {
+                Document document = searcher.doc(sc.doc);
+                System.out.println(document.get("title"));
+            }
+            System.out.println(tops.totalHits);
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
     }
 
     public static void testTerm(){
