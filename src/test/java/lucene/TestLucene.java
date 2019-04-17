@@ -28,7 +28,7 @@ public class TestLucene {
         //AddIndex.addIndex(new File("E:\\文档\\JAVA-api\\文档检索系统\\41-1507084237-朱登奎-第二组.pptx"));
         //UpdateIndex.update(new File("E:\\文档\\JAVA-api\\文档检索系统\\任务详细划分.docx"));
         //testSearch("E:\\文档\\JAVA-api\\文档检索系统\\子文件夹2"+"*");
-        testSearch("E:\\文档\\JAVA-api\\文档检索系统\\子文件夹2".replace("\\","?"));
+        //testSearch("E:\\文档\\JAVA-api\\文档检索系统\\子文件夹2".replace("\\","?"));
     }
 
     public static void testSearch(String path){
