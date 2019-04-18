@@ -30,6 +30,9 @@ public class PPTFilter {
         String content = "";
         StringBuffer sb = new StringBuffer();
         try {
+            if (!file.exists()){
+                return content;
+            }
             InputStream inputStream = new FileInputStream(file);
             if (file.getName().endsWith(".ppt")){
                 PowerPointExtractor extractor = new PowerPointExtractor(inputStream);

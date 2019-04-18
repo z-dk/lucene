@@ -18,6 +18,9 @@ public class WordFilter {
 
     public static String parserFile(File file){
         String content = "";
+        if (!file.exists()){
+            return content;
+        }
         try {
             if (file.getName().endsWith(".doc")){
                 InputStream inputStream = new FileInputStream(file);

@@ -17,6 +17,9 @@ public class TxtFilter {
         String str = null;
         StringBuffer buffer = new StringBuffer();
         try {
+            if (!file.exists()){
+                return "";
+            }
             InputStream inputStream = new FileInputStream(file);
             InputStreamReader reader = new InputStreamReader(inputStream,encoding);
             BufferedReader bufferedReader = new BufferedReader(reader);

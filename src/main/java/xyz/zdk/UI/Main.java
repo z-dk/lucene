@@ -81,9 +81,10 @@ public class Main extends HBox{
 
                     box.setSpacing(5);
 
-                    MenuItem menuItem = new MenuItem("打开所在文件夹");
+                    MenuItem menuItem = new MenuItem("打开文件所在位置");
                     menuItem.setOnAction(event -> {
-                        String folder = fileModel.getPath().replaceAll(fileModel.getTitle(),"");
+                        int last = fileModel.getPath().lastIndexOf("\\");
+                        String folder = fileModel.getPath().substring(0,last);
                         try {
                             Runtime.getRuntime().exec("explorer "+folder);
                         } catch (IOException e) {

@@ -26,6 +26,9 @@ public class ExcelFilter {
     public static String parserFile(File file){
         String content = "";
         List<String> stringList = new ArrayList<>();
+        if (!file.exists()){
+            return content;
+        }
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
             if (file.getName().endsWith(".xls")){

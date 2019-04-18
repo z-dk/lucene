@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import xyz.zdk.listener.WatchServiceListen;
 import xyz.zdk.lucene.CreateIndex;
 
 import java.io.IOException;
@@ -38,5 +39,6 @@ public class StartJavaFX extends Application {
         };
         ProgressLoading progressLoading = new ProgressLoading(task,primaryStage);
         progressLoading.activateProgressBar();
+        WatchServiceListen.startListener();
     }
 }
