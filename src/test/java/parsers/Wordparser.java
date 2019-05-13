@@ -1,4 +1,4 @@
-package xyz.zdk.parsers;
+package parsers;
 
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;

@@ -1,4 +1,4 @@
-package xyz.zdk.parsers;
+package parsers;
 
 import java.io.*;
 

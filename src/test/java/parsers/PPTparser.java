@@ -1,4 +1,4 @@
-package xyz.zdk.parsers;
+package parsers;
 
 import org.apache.poi.sl.usermodel.SlideShow;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;

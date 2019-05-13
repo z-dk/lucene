@@ -1,4 +1,4 @@
-package xyz.zdk.parsers;
+package parsers;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
