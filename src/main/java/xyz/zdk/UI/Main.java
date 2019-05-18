@@ -11,11 +11,15 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import xyz.zdk.bean.FileModel;
 
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -124,18 +128,21 @@ public class Main extends HBox{
                         }
                     });
                     //对标签拆分进行高亮显示
-                    FlowPane pane = new FlowPane();
+                    TextFlow textFlow = new TextFlow();
 
                     String[] strings = fileModel.getContent().split("<span>|</span>");
                     for (int i = 0;i<strings.length;i++){
-                        Label label = new Label(strings[i]);
-                        label.setWrapText(true);
+                        Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+                        Matcher matcher = p.matcher(strings[i]);
+                        Text fxText = new Text(matcher.replaceAll(""));
+
                         if (i%2==1){
-                            label.setTextFill(Color.web("red"));
+                            fxText.setFill(Color.RED);
                         }
-                        pane.getChildren().add(label);
+                        textFlow.getChildren().add(fxText);
                     }
-                    box.getChildren().addAll(hBox, pane);
+                    textFlow.setMaxWidth(750);
+                    box.getChildren().addAll(hBox, textFlow);
 
                 }
             }
