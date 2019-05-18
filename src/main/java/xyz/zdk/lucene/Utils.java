@@ -29,38 +29,26 @@ public class Utils {
         }else if (file.getName().endsWith(".txt")){
             fileModel = TxtFilter.extractFile(file);
             return fileModel;
+        } else if (file.getName().endsWith(".xml")){
+            fileModel = XmlFilter.extractFile(file);
+            return fileModel;
+        } else if (file.getName().endsWith(".html")){
+            fileModel = HtmlFilter.extractFile(file);
+            return fileModel;
         }
         return null;
     }
 
     public static List<FileModel> extractFile(String path) throws Exception {
         List<FileModel> fileModels = new ArrayList<>();
-        //首先遍历文件，判断文件类型
 
+        //首先遍历文件，判断文件类型
         List<File> fileList = traverseFolder(path);
         for (int i=0;i<fileList.size();i++){
-            FileModel fileModel;
+            FileModel fileModel = parserFile(fileList.get(i));
             System.out.println(fileList.get(i).getName());
-            //根据文件类型调用相应的filter
-            //处理pdf文件
-            //接收filter返回的filemodel对象
-            //封装filemodel集合
-            if (fileList.get(i).getName().endsWith(".pdf")){
-                fileModel = PDFFilter.extractFile(fileList.get(i));
-                fileModels.add(fileModel);
-            }else if (fileList.get(i).getName().endsWith(".xls")||fileList.get(i).getName().endsWith(".xlsx")){
-                fileModel = ExcelFilter.extractFile(fileList.get(i));
-                fileModels.add(fileModel);
-            }else if (fileList.get(i).getName().endsWith(".doc")||fileList.get(i).getName().endsWith(".docx")){
-                fileModel = WordFilter.extractFile(fileList.get(i));
-                fileModels.add(fileModel);
-            }else if (fileList.get(i).getName().endsWith(".ppt")||fileList.get(i).getName().endsWith(".pptx")){
-                fileModel = PPTFilter.extractFile(fileList.get(i));
-                fileModels.add(fileModel);
-            }else if (fileList.get(i).getName().endsWith(".txt")){
-                fileModel = TxtFilter.extractFile(fileList.get(i));
-                fileModels.add(fileModel);
-            }
+
+            fileModels.add(fileModel);
         }
         return fileModels;
     }
